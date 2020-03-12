@@ -13,11 +13,13 @@
 ## <div id="02"></div>
 ## 2 编写代码    
     2.1、pom.xml文件引入依赖
-    2.2、application.properties添加配置项
-    2.3、编写mapper.java文件
-    2.4、指定需扫描mapper包
-    2.5、编写测试用例
+    2.2、编写注解定时器
+    2.3、编写bean定时器
+    2.4、编写动态增、删、改定时器测试类
 
 ## <div id="03"></div>
 ## 3 测试  
-> 运行测试类          
+    3.1、运行项目，观察注解及bean方式定时器
+    3.2、http://localhost:8080/set 修改定时器
+    3.2、http://localhost:8080/add 增加定时器
+    3.3、http://localhost:8080/del 删除定时器
