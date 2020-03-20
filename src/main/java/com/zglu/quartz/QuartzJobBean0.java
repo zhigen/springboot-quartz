@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 @EnableScheduling
-public class TestJob extends QuartzJobBean {
+public class QuartzJobBean0 extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
@@ -21,16 +21,17 @@ public class TestJob extends QuartzJobBean {
     }
 
     @Bean
-    public JobDetail jobDetail() {
-        return JobBuilder.newJob(TestJob.class).withIdentity("jobDetail").storeDurably().build();
+    public JobDetail jobDetail0() {
+        return JobBuilder.newJob(QuartzJobBean0.class).withIdentity("jobDetail0").storeDurably().build();
     }
 
     @Bean
-    public Trigger trigger() {
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/5 * * * * ?");
-        return TriggerBuilder.newTrigger().forJob(jobDetail())
-                .withIdentity("trigger")
-                .withSchedule(scheduleBuilder)
+    public Trigger trigger0(JobDetail jobDetail0) {
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("*/5 * * * * ?");
+        return TriggerBuilder.newTrigger()
+                .forJob(jobDetail0)
+                .withSchedule(cronScheduleBuilder)
+                .withIdentity("trigger0")
                 .build();
     }
 }

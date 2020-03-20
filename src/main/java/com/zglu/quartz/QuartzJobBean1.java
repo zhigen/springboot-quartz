@@ -13,15 +13,15 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 @EnableScheduling
-public class TestJobNew extends QuartzJobBean {
+public class QuartzJobBean1 extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
-        log.info("new一个bean方式每10秒定时打印");
+        log.info("动态创建定时打印");
     }
 
     @Bean
-    public JobDetail jobDetailNew() {
-        return JobBuilder.newJob(TestJobNew.class).withIdentity("jobDetailNew").storeDurably().build();
+    public JobDetail jobDetail1() {
+        return JobBuilder.newJob(QuartzJobBean1.class).withIdentity("jobDetail1").storeDurably().build();
     }
 }

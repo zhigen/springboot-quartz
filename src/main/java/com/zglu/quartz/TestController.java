@@ -1,9 +1,9 @@
 package com.zglu.quartz;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.quartz.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author zglu
@@ -13,35 +13,41 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     private final Scheduler scheduler;
-    private final JobDetail jobDetailNew;
+    private final JobDetail jobDetail1;
+    private static final String TRIGGER_KEY = "trigger1";
 
-    @GetMapping("/set")
-    public String set() throws SchedulerException {
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/10 * * * * ?");
-        TriggerKey triggerKey = TriggerKey.triggerKey("trigger");
-        CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-        trigger = trigger.getTriggerBuilder()
-                .withSchedule(scheduleBuilder)
-                .build();
-        //重启触发器
-        scheduler.rescheduleJob(triggerKey, trigger);
-        return "将定时器设定为10秒";
-    }
-
-    @GetMapping("/add")
+    @PostMapping
+    @ApiOperation("添加定时器")
     public String add() throws SchedulerException {
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/10 * * * * ?");
-        Trigger triggerNew = TriggerBuilder.newTrigger().forJob(jobDetailNew)
-                .withIdentity("triggerNew")
-                .withSchedule(scheduleBuilder)
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("*/5 * * * * ?");
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .forJob(jobDetail1)
+                .withSchedule(cronScheduleBuilder)
+                .withIdentity(TRIGGER_KEY)
                 .build();
-        scheduler.scheduleJob(triggerNew);
-        return "启动新定时器";
+        scheduler.scheduleJob(trigger);
+        return "动态创建定时打印5秒";
     }
 
-    @GetMapping("/del")
-    public String del() throws SchedulerException {
-        scheduler.deleteJob(new JobKey("jobDetailNew"));
+    @DeleteMapping
+    @ApiOperation("删除定时器")
+    public String remove() throws SchedulerException {
+        scheduler.deleteJob(new JobKey(TRIGGER_KEY));
         return "删除新定时器";
     }
+
+    @PatchMapping
+    @ApiOperation("设置定时器")
+    public String set() throws SchedulerException {
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("*/10 * * * * ?");
+        TriggerKey triggerKey = TriggerKey.triggerKey(TRIGGER_KEY);
+        CronTrigger cronTrigger = (CronTrigger) scheduler.getTrigger(triggerKey);
+        cronTrigger = cronTrigger.getTriggerBuilder()
+                .withSchedule(cronScheduleBuilder)
+                .build();
+        // 重启触发器
+        scheduler.rescheduleJob(triggerKey, cronTrigger);
+        return "动态修改定时打印10秒";
+    }
+
 }
